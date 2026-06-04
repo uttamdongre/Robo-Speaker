@@ -1,7 +1,75 @@
+import os
 from PyPDF2 import PdfReader
 
 from speech import speak
 from utils import load_json, save_json
+
+
+def select_pdf():
+
+    pdf_folder = "pdfs"
+
+    if not os.path.exists(pdf_folder):
+        os.makedirs(pdf_folder)
+        print("Created pdfs folder. Add PDFs and try again.")
+        return None
+    pdf_files = [f for f in os.listdir(pdf_folder) if f.lower().endswith(".pdf")]
+
+    if not pdf_files:
+        print("No PDFs found in pdfs folder")
+        return None
+
+    print("\nAvailable PDFs\n")
+
+    for i, pdf in enumerate(pdf_files, start=1):
+        print(f"{i}. {pdf}")
+
+    try:
+        choice = int(input("\nSelect PDF: "))
+
+        if 1 <= choice <= len(pdf_files):
+            return os.path.join(pdf_folder, pdf_files[choice - 1])
+
+    except:
+        pass
+
+    print("Invalid selection")
+    return None
+
+
+def search_pdf(reader, total_pages):
+
+    keyword = input("\nSearch text: ").lower()
+
+    matches = []
+
+    print("\nSearching...\n")
+
+    for page_no in range(total_pages):
+        text = reader.pages[page_no].extract_text()
+
+        if text and keyword in text.lower():
+            matches.append(page_no + 1)
+
+    if not matches:
+        print("No matches found")
+        return None
+
+    print(f"\nFound on {len(matches)} page(s):")
+
+    for page in matches:
+        print(page)
+
+    try:
+        page = int(input("\nJump to page: "))
+
+        if page in matches:
+            return page
+
+    except:
+        pass
+
+    return None
 
 
 # -------------------------
@@ -38,6 +106,15 @@ def add_bookmark(pdf_path, current_page):
         bookmarks[pdf_path] = []
 
     name = input("Bookmark Name: ")
+
+    if not name.strip():
+        print("Bookmark name cannot be empty")
+        return
+    note = input("Bookmark Note: ")
+
+    if not os.name.strip():
+        print("Bookmark name cannot be empty")
+        return
     note = input("Bookmark Note: ")
 
     bookmarks[pdf_path].append({"name": name, "page": current_page, "note": note})
@@ -137,6 +214,9 @@ def continuous_reading(reader, pdf_path, current_page, total_pages):
 
     print("\nPDF Completed")
 
+    progress[pdf_path] = {"last_page": 1}
+    save_progress(progress)
+
 
 def interactive_reading(reader, pdf_path, current_page, total_pages):
 
@@ -163,6 +243,7 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
         print("L = List Bookmarks")
         print("G = Go To Bookmark")
         print("D = Delete Bookmark")
+        print("S = Search")
         print("E = Exit")
 
         command = input("\nEnter Command: ").lower()
@@ -181,9 +262,15 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
                 if 1 <= page <= total_pages:
                     current_page = page
-                    print(f"DEBUG: Jumped to page {current_page}")
+                    print(f"Jumped to page {current_page}")
             except:
                 pass
+
+        elif command == "s":
+            page = search_pdf(reader, total_pages)
+
+            if page:
+                current_page = page
 
         elif command == "r":
             continue
@@ -204,8 +291,18 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
             delete_bookmark(pdf_path)
 
         elif command == "e":
+            if current_page >= total_pages:
+                progress[pdf_path] = {"last_page": 1}
+            else:
+                progress[pdf_path] = {"last_page": current_page}
+
+            save_progress(progress)
+
             print("Progress Saved")
             break
+
+        else:
+            print("Invalid Command")
 
 
 # -------------------------
@@ -215,7 +312,10 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
 def read_pdf():
 
-    pdf_path = input("\nEnter PDF Path: ").strip()
+    pdf_path = select_pdf()
+
+    if not pdf_path:
+        return
 
     try:
         reader = PdfReader(pdf_path)
