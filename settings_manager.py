@@ -72,6 +72,33 @@ def change_voice():
         print("Invalid Input")
 
 
+def change_voice_engine():
+
+    settings = load_settings()
+
+    print("\nVoice Engine")
+    print("1. Windows SAPI")
+    print("2. Edge Neural Voice")
+
+    choice = input("\nChoose: ")
+
+    if choice == "1":
+        settings["voice_engine"] = "sapi"
+
+    elif choice == "2":
+        settings["voice_engine"] = "edge"
+
+        settings["voice_name"] = "en-US-AriaNeural"
+
+    else:
+        print("Invalid Choice")
+        return
+
+    save_settings(settings)
+
+    print("Voice engine updated")
+
+
 def show_settings():
 
     settings = load_settings()
@@ -91,8 +118,9 @@ def show_settings():
 
     speed_name = {-2: "Slow", 0: "Normal", 2: "Fast"}.get(rate, str(rate))
 
-    print("\nCurrent Settings\n")
+    engine = settings.get("voice_engine", "sapi")
 
+    print(f"Voice Engine : {engine}")
     print(f"Voice : {voice_name}")
     print(f"Speed : {speed_name}")
 
@@ -100,11 +128,11 @@ def show_settings():
 def settings_menu():
 
     while True:
-        print("\n===== SETTINGS =====")
         print("1. Change Speech Speed")
-        print("2. Change Voice")
-        print("3. Show Current Settings")
-        print("4. Back")
+        print("2. Change SAPI Voice")
+        print("3. Change Voice Engine")
+        print("4. Show Current Settings")
+        print("5. Back")
 
         choice = input("\nChoose: ")
 
@@ -115,9 +143,12 @@ def settings_menu():
             change_voice()
 
         elif choice == "3":
-            show_settings()
+            change_voice_engine()
 
         elif choice == "4":
+            show_settings()
+
+        elif choice == "5":
             break
 
         else:
