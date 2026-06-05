@@ -1,6 +1,7 @@
 from settings_manager import settings_menu
 from speech import speak
 from pdf_reader import read_pdf
+from stats_manager import show_statistics
 
 
 def text_mode():
@@ -24,7 +25,8 @@ def main():
         print("1. Speak Text")
         print("2. Read PDF")
         print("3. Settings")
-        print("4. Exit")
+        print("4. Statistics")
+        print("5. Exit")
 
         choice = input("\nEnter your choice: ")
 
@@ -38,6 +40,9 @@ def main():
             settings_menu()
 
         elif choice == "4":
+            show_statistics()
+
+        elif choice == "5":
             speak("Bye Bye Friend")
 
             print("Goodbye!")

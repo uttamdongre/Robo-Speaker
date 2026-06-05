@@ -4,6 +4,10 @@ from PyPDF2 import PdfReader
 from speech import speak
 from utils import load_json, save_json
 
+from stats_manager import increment_pdf_opened, increment_pages_read
+from recent_manager import add_recent, show_recent
+from search_manager import add_search, show_search_history
+
 
 def select_pdf():
 
@@ -40,6 +44,7 @@ def select_pdf():
 def search_pdf(reader, total_pages):
 
     keyword = input("\nSearch text: ").lower()
+    add_search(keyword)
 
     matches = []
 
@@ -207,6 +212,7 @@ def continuous_reading(reader, pdf_path, current_page, total_pages):
 
         if text:
             speak(text)
+            increment_pages_read()
 
         progress[pdf_path] = {"last_page": page_no}
 
@@ -229,6 +235,7 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
         if text:
             speak(text)
+            increment_pages_read()
 
         progress[pdf_path] = {"last_page": current_page}
 
@@ -244,6 +251,7 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
         print("G = Go To Bookmark")
         print("D = Delete Bookmark")
         print("S = Search")
+        print("H = Search History")
         print("E = Exit")
 
         command = input("\nEnter Command: ").lower()
@@ -271,6 +279,9 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
             if page:
                 current_page = page
+
+        elif command == "h":
+            show_search_history()
 
         elif command == "r":
             continue
@@ -312,13 +323,27 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
 def read_pdf():
 
-    pdf_path = select_pdf()
+    print("\n1. Recent PDFs")
+    print("2. Browse PDF Library")
+
+    choice = input("\nChoose: ")
+
+    if choice == "1":
+        pdf_path = show_recent()
+
+        if not pdf_path:
+            pdf_path = select_pdf()
+
+    else:
+        pdf_path = select_pdf()
 
     if not pdf_path:
         return
 
     try:
         reader = PdfReader(pdf_path)
+        add_recent(pdf_path)
+        increment_pdf_opened(os.path.basename(pdf_path))
 
     except Exception as e:
         print(f"\nUnable To Open PDF: {e}")
