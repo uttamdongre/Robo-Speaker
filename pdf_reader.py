@@ -116,14 +116,16 @@ def add_bookmark(pdf_path, current_page):
     if not name.strip():
         print("Bookmark name cannot be empty")
         return
+
     note = input("Bookmark Note: ")
 
-    if not os.name.strip():
-        print("Bookmark name cannot be empty")
-        return
-    note = input("Bookmark Note: ")
-
-    bookmarks[pdf_path].append({"name": name, "page": current_page, "note": note})
+    bookmarks[pdf_path].append(
+        {
+            "name": name,
+            "page": current_page,
+            "note": note,
+        }
+    )
 
     save_bookmarks(bookmarks)
 

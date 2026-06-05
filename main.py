@@ -2,6 +2,7 @@ from settings_manager import settings_menu
 from speech import speak
 from pdf_reader import read_pdf
 from stats_manager import show_statistics
+from export_manager import export_menu
 
 
 def text_mode():
@@ -26,7 +27,8 @@ def main():
         print("2. Read PDF")
         print("3. Settings")
         print("4. Statistics")
-        print("5. Exit")
+        print("5. Export Data")
+        print("6. Exit")
 
         choice = input("\nEnter your choice: ")
 
@@ -43,9 +45,13 @@ def main():
             show_statistics()
 
         elif choice == "5":
+            export_menu()
+
+        elif choice == "6":
             speak("Bye Bye Friend")
 
             print("Goodbye!")
+
             break
 
         else:
