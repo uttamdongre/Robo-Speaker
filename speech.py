@@ -6,9 +6,11 @@ speaker = win32com.client.Dispatch("SAPI.SpVoice")
 
 
 def load_settings():
+
     settings = load_json("settings.json")
 
     rate = settings.get("speech_rate", 0)
+
     voice_index = settings.get("voice_index", 0)
 
     speaker.Rate = rate

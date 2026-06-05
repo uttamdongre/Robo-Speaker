@@ -1,0 +1,9 @@
+⏸ Pause/Resume while speaking
+⚡ Speed control from menu
+🎙 Voice selection
+📂 Automatic PDF library scanning (pdfs/ folder)
+🔍 Search text inside PDF
+📊 Reading statistics
+📄 Read DOCX/TXT/EPUB files
+🌙 Auto-save reading sessions
+GUI interface

@@ -1,3 +1,4 @@
+from settings_manager import settings_menu
 from speech import speak
 from pdf_reader import read_pdf
 
@@ -22,7 +23,8 @@ def main():
         print("\n===== ROBO SPEAKER =====")
         print("1. Speak Text")
         print("2. Read PDF")
-        print("3. Exit")
+        print("3. Settings")
+        print("4. Exit")
 
         choice = input("\nEnter your choice: ")
 
@@ -33,6 +35,9 @@ def main():
             read_pdf()
 
         elif choice == "3":
+            settings_menu()
+
+        elif choice == "4":
             speak("Bye Bye Friend")
 
             print("Goodbye!")
