@@ -8,6 +8,17 @@ from stats_manager import increment_pdf_opened, increment_pages_read
 from recent_manager import add_recent, show_recent
 from search_manager import add_search, show_search_history
 from notes_manager import add_note, view_notes, edit_note, delete_note
+from collections_manager import (
+    add_favorite,
+    remove_favorite,
+    view_favorites,
+    assign_category,
+    view_categories,
+    remove_from_category,
+    add_to_reading_list,
+    view_reading_lists,
+    remove_from_reading_list,
+)
 
 
 def select_pdf():
@@ -259,6 +270,15 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
         print("V = View Notes")
         print("U = Edit Note")
         print("X = Delete Note")
+        print("F = Add Favorite")
+        print("Y = View Favorites")
+        print("Z = Remove Favorite")
+        print("C = Add Category")
+        print("K = View Categories")
+        print("Q = Remove Category")
+        print("P = Add To Reading List")
+        print("W = View Reading Lists")
+        print("O = Remove From Reading List")
         print("E = Exit")
 
         command = input("\nEnter Command: ").lower()
@@ -330,6 +350,33 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
         elif command == "x":
             delete_note(pdf_path)
+
+        elif command == "f":
+            add_favorite(pdf_path)
+
+        elif command == "y":
+            view_favorites()
+
+        elif command == "z":
+            remove_favorite(pdf_path)
+
+        elif command == "c":
+            assign_category(pdf_path)
+
+        elif command == "k":
+            view_categories()
+
+        elif command == "q":
+            remove_from_category(pdf_path)
+
+        elif command == "p":
+            add_to_reading_list(pdf_path)
+
+        elif command == "w":
+            view_reading_lists()
+
+        elif command == "o":
+            remove_from_reading_list(pdf_path)
 
         else:
             print("Invalid Command")
