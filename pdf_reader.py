@@ -7,6 +7,7 @@ from utils import load_json, save_json
 from stats_manager import increment_pdf_opened, increment_pages_read
 from recent_manager import add_recent, show_recent
 from search_manager import add_search, show_search_history
+from notes_manager import add_note, view_notes, edit_note, delete_note
 
 
 def select_pdf():
@@ -252,6 +253,10 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
         print("D = Delete Bookmark")
         print("S = Search")
         print("H = Search History")
+        print("T = Add Note")
+        print("V = View Notes")
+        print("U = Edit Note")
+        print("X = Delete Note")
         print("E = Exit")
 
         command = input("\nEnter Command: ").lower()
@@ -311,6 +316,18 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
             print("Progress Saved")
             break
+
+        elif command == "t":
+            add_note(pdf_path, current_page)
+
+        elif command == "v":
+            view_notes(pdf_path)
+
+        elif command == "u":
+            edit_note(pdf_path)
+
+        elif command == "x":
+            delete_note(pdf_path)
 
         else:
             print("Invalid Command")
