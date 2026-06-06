@@ -1,5 +1,6 @@
 {
     "voice_engine": "edge",
     "voice_name": "en-US-AriaNeural",
-    "speech_rate": 0
+    "speech_rate": 0,
+    "voice_index": 0
 }

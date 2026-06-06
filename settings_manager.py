@@ -1,6 +1,14 @@
 from utils import load_json, save_json
 import win32com.client
 
+EDGE_VOICES = {
+    "1": ("Aria Female", "en-US-AriaNeural"),
+    "2": ("Jenny Female", "en-US-JennyNeural"),
+    "3": ("Guy Male", "en-US-GuyNeural"),
+    "4": ("Davis Male", "en-US-DavisNeural"),
+    "5": ("Sonia Female", "en-GB-SoniaNeural"),
+    "6": ("Ryan Male", "en-GB-RyanNeural"),
+}
 
 SETTINGS_FILE = "settings.json"
 
@@ -72,6 +80,54 @@ def change_voice():
         print("Invalid Input")
 
 
+def change_neural_voice():
+
+    settings = load_settings()
+
+    print("\nAvailable Neural Voices\n")
+
+    for key, (name, voice) in EDGE_VOICES.items():
+        print(f"{key}. {name}")
+
+    choice = input("\nChoose Voice: ")
+
+    if choice in EDGE_VOICES:
+        settings["voice_name"] = EDGE_VOICES[choice][1]
+
+        save_settings(settings)
+
+        print("Neural voice updated")
+
+    else:
+        print("Invalid Choice")
+
+
+def change_voice_engine():
+
+    settings = load_settings()
+
+    print("\nVoice Engine")
+
+    print("1. Windows SAPI")
+    print("2. Edge Neural")
+
+    choice = input("\nChoose: ")
+
+    if choice == "1":
+        settings["voice_engine"] = "sapi"
+
+    elif choice == "2":
+        settings["voice_engine"] = "edge"
+
+    else:
+        print("Invalid Choice")
+        return
+
+    save_settings(settings)
+
+    print("Voice engine updated")
+
+
 def change_voice_engine():
 
     settings = load_settings()
@@ -103,34 +159,27 @@ def show_settings():
 
     settings = load_settings()
 
+    print("\nCurrent Settings\n")
+
+    print(f"Voice Engine : {settings.get('voice_engine', 'sapi')}")
+
+    print(f"Neural Voice : {settings.get('voice_name', 'N/A')}")
+
     rate = settings.get("speech_rate", 0)
-
-    voice_index = settings.get("voice_index", 0)
-
-    speaker = win32com.client.Dispatch("SAPI.SpVoice")
-
-    voices = speaker.GetVoices()
-
-    voice_name = "Unknown"
-
-    if voice_index < voices.Count:
-        voice_name = voices.Item(voice_index).GetDescription()
 
     speed_name = {-2: "Slow", 0: "Normal", 2: "Fast"}.get(rate, str(rate))
 
-    engine = settings.get("voice_engine", "sapi")
-
-    print(f"Voice Engine : {engine}")
-    print(f"Voice : {voice_name}")
     print(f"Speed : {speed_name}")
 
 
 def settings_menu():
 
     while True:
+        print("\n===== SETTINGS =====")
+
         print("1. Change Speech Speed")
-        print("2. Change SAPI Voice")
-        print("3. Change Voice Engine")
+        print("2. Change Voice Engine")
+        print("3. Change Neural Voice")
         print("4. Show Current Settings")
         print("5. Back")
 
@@ -140,10 +189,10 @@ def settings_menu():
             change_speed()
 
         elif choice == "2":
-            change_voice()
+            change_voice_engine()
 
         elif choice == "3":
-            change_voice_engine()
+            change_neural_voice()
 
         elif choice == "4":
             show_settings()
