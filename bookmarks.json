@@ -1,4 +1,15 @@
 {
     "AI_Engineering.pdf": [],
-    "pdfs\\AI_Engineering.pdf": []
+    "pdfs\\AI_Engineering.pdf": [
+        {
+            "name": "Testing",
+            "page": 1,
+            "note": "Testing_bookmark"
+        },
+        {
+            "name": "test",
+            "page": 1,
+            "note": "trst"
+        }
+    ]
 }

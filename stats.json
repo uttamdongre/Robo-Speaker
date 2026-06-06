@@ -1,9 +1,9 @@
 {
-    "total_pdfs_read": 30,
-    "total_pages_read": 72,
-    "reading_sessions": 30,
+    "total_pdfs_read": 33,
+    "total_pages_read": 93,
+    "reading_sessions": 33,
     "last_pdf_opened": "AI_Engineering.pdf",
     "pdf_open_counts": {
-        "AI_Engineering.pdf": 1
+        "AI_Engineering.pdf": 4
     }
 }

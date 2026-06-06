@@ -62,8 +62,6 @@ def select_pdf():
 def search_pdf(reader, total_pages):
 
     keyword = input("\nSearch text: ").lower()
-    from history_manager import add_search_history
-
     add_search_history(keyword)
     add_search(keyword)
 
@@ -91,6 +89,51 @@ def search_pdf(reader, total_pages):
 
     try:
         page = int(input("\nJump to page: "))
+        for item in matches:
+            if item["page"] == page:
+                return page
+
+    except:
+        pass
+
+    return None
+
+
+def search_pdf_keyword(reader, total_pages, keyword):
+
+    add_search_history(keyword)
+
+    add_search(keyword)
+
+    matches = []
+
+    print(f"\nSearching for: {keyword}\n")
+
+    for page_no in range(total_pages):
+        text = reader.pages[page_no].extract_text()
+
+        if text and keyword.lower() in text.lower():
+            matches.append(
+                {
+                    "page": page_no + 1,
+                    "preview": text[:150].replace("\n", " "),
+                }
+            )
+
+    if not matches:
+        print("No matches found")
+        return None
+
+    print(f"\nFound on {len(matches)} page(s):")
+
+    for item in matches:
+        print(f"\nPage {item['page']}")
+
+        print(item["preview"])
+
+    try:
+        page = int(input("\nJump to page: "))
+
         for item in matches:
             if item["page"] == page:
                 return page
@@ -253,6 +296,29 @@ def continuous_reading(reader, pdf_path, current_page, total_pages):
     save_progress(progress)
 
 
+def normalize_command(command):
+
+    command = command.lower().strip()
+
+    replacements = {
+        "next page": "next",
+        "previous page": "back",
+        "go back": "back",
+        "show bookmarks": "list bookmarks",
+        "view bookmarks": "list bookmarks",
+        "add bookmark": "bookmark",
+        "create bookmark": "bookmark",
+        "show notes": "v",
+        "view notes": "v",
+        "add note": "t",
+        "create note": "t",
+        "exit reader": "exit",
+        "quit reader": "exit",
+    }
+
+    return replacements.get(command, command)
+
+
 def interactive_reading(reader, pdf_path, current_page, total_pages):
 
     progress = load_progress()
@@ -264,9 +330,13 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
         if text:
             speak(text)
+
             increment_pages_read()
+
             analytics = load_analytics()
+
             analytics["today_pages"] += 1
+
             save_analytics(analytics)
 
         progress[pdf_path] = {"last_page": current_page}
@@ -274,93 +344,186 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
         save_progress(progress)
 
         print("\nCommands")
-        print("N = Next")
-        print("B = Back")
-        print("J = Jump")
-        print("R = Replay")
-        print("M = Bookmark")
-        print("L = List Bookmarks")
-        print("G = Go To Bookmark")
-        print("D = Delete Bookmark")
-        print("S = Search")
-        print("H = Search History")
-        print("T = Add Note")
-        print("V = View Notes")
-        print("U = Edit Note")
-        print("X = Delete Note")
-        print("F = Add Favorite")
-        print("Y = View Favorites")
-        print("Z = Remove Favorite")
-        print("C = Add Category")
-        print("K = View Categories")
-        print("Q = Remove Category")
-        print("P = Add To Reading List")
-        print("W = View Reading Lists")
-        print("O = Remove From Reading List")
-        print("E = Exit")
 
-        command = input("\nEnter Command: ").lower()
+        print("next")
+        print("back")
 
-        if command == "n":
+        print("jump 25")
+        print("go to page 25")
+
+        print("search python")
+        print("search for python")
+        print("find python")
+
+        print("bookmark")
+        print("show bookmarks")
+
+        print("add note")
+        print("show notes")
+
+        print("exit")
+
+        command = input("\nEnter Command: ").lower().strip()
+
+        command = normalize_command(command)
+
+        # NEXT
+
+        if command in [
+            "n",
+            "next",
+        ]:
             if current_page < total_pages:
                 current_page += 1
 
-        elif command == "b":
+        # BACK
+
+        elif command in [
+            "b",
+            "back",
+            "previous",
+        ]:
             if current_page > 1:
                 current_page -= 1
 
-        elif command == "j":
-            try:
-                page = int(input(f"Page (1-{total_pages}): "))
+        # JUMP
 
-                if 1 <= page <= total_pages:
-                    current_page = page
-                    print(f"Jumped to page {current_page}")
-            except:
-                pass
+        elif (
+            command == "j"
+            or command.startswith("jump")
+            or command.startswith("go to page")
+            or command.startswith("open page")
+            or command.startswith("take me to page")
+        ):
+            page_number = None
 
-        elif command == "s":
-            page = search_pdf(reader, total_pages)
+            parts = command.split()
+
+            for part in parts:
+                if part.isdigit():
+                    page_number = int(part)
+
+                    break
+
+            if page_number:
+                if 1 <= page_number <= total_pages:
+                    current_page = page_number
+
+                    print(f"Jumped to page {page_number}")
+
+            else:
+                try:
+                    page = int(input(f"Page (1-{total_pages}): "))
+
+                    if 1 <= page <= total_pages:
+                        current_page = page
+
+                except:
+                    pass
+
+        # SEARCH
+
+        elif (
+            command.startswith("search")
+            or command.startswith("find ")
+            or command.startswith("look for ")
+        ):
+            keyword = None
+
+            if command.startswith("search for "):
+                keyword = command.replace(
+                    "search for ",
+                    "",
+                    1,
+                )
+
+            elif command.startswith("search "):
+                keyword = command.replace(
+                    "search ",
+                    "",
+                    1,
+                )
+
+            elif command.startswith("find "):
+                keyword = command.replace(
+                    "find ",
+                    "",
+                    1,
+                )
+
+            elif command.startswith("look for "):
+                keyword = command.replace(
+                    "look for ",
+                    "",
+                    1,
+                )
+
+            if keyword:
+                page = search_pdf_keyword(
+                    reader,
+                    total_pages,
+                    keyword,
+                )
+
+            else:
+                page = search_pdf(
+                    reader,
+                    total_pages,
+                )
 
             if page:
                 current_page = page
 
-        elif command == "h":
-            show_search_history()
+        # BOOKMARKS
 
-        elif command == "r":
-            continue
+        elif command in [
+            "m",
+            "bookmark",
+        ]:
+            add_bookmark(
+                pdf_path,
+                current_page,
+            )
 
-        elif command == "m":
-            add_bookmark(pdf_path, current_page)
-
-        elif command == "l":
+        elif command in [
+            "l",
+            "list bookmarks",
+        ]:
             list_bookmarks(pdf_path)
 
-        elif command == "g":
+        elif command in [
+            "g",
+            "go bookmark",
+            "goto bookmark",
+        ]:
             page = goto_bookmark(pdf_path)
 
             if page:
                 current_page = page
 
-        elif command == "d":
+        elif command in [
+            "d",
+            "delete bookmark",
+        ]:
             delete_bookmark(pdf_path)
 
-        elif command == "e":
-            if current_page >= total_pages:
-                progress[pdf_path] = {"last_page": 1}
-            else:
-                progress[pdf_path] = {"last_page": current_page}
+        # NOTES
 
-            save_progress(progress)
+        elif command in [
+            "t",
+            "add note",
+            "create note",
+        ]:
+            add_note(
+                pdf_path,
+                current_page,
+            )
 
-            print("Progress Saved")
-            break
-
-        elif command == "t":
-            add_note(pdf_path, current_page)
-
-        elif command == "v":
+        elif command in [
+            "v",
+            "show notes",
+            "view notes",
+        ]:
             view_notes(pdf_path)
 
         elif command == "u":
@@ -368,6 +531,18 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
         elif command == "x":
             delete_note(pdf_path)
+
+        # SEARCH HISTORY
+
+        elif command == "h":
+            show_search_history()
+
+        # REPLAY
+
+        elif command == "r":
+            continue
+
+        # COLLECTIONS
 
         elif command == "f":
             add_favorite(pdf_path)
@@ -395,6 +570,25 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
         elif command == "o":
             remove_from_reading_list(pdf_path)
+
+        # EXIT
+
+        elif command in [
+            "e",
+            "exit",
+            "quit",
+        ]:
+            if current_page >= total_pages:
+                progress[pdf_path] = {"last_page": 1}
+
+            else:
+                progress[pdf_path] = {"last_page": current_page}
+
+            save_progress(progress)
+
+            print("Progress Saved")
+
+            break
 
         else:
             print("Invalid Command")

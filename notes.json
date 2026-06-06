@@ -1,3 +1,8 @@
 {
-    "pdfs\\AI_Engineering.pdf": []
+    "pdfs\\AI_Engineering.pdf": [
+        {
+            "page": 1,
+            "note": "hello tsting"
+        }
+    ]
 }
