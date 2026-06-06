@@ -3,7 +3,7 @@ from PyPDF2 import PdfReader
 
 from speech import speak
 from utils import load_json, save_json
-
+from history_manager import add_recent_pdf, add_search_history
 from stats_manager import increment_pdf_opened, increment_pages_read
 from recent_manager import add_recent, show_recent
 from search_manager import add_search, show_search_history
@@ -62,6 +62,9 @@ def select_pdf():
 def search_pdf(reader, total_pages):
 
     keyword = input("\nSearch text: ").lower()
+    from history_manager import add_search_history
+
+    add_search_history(keyword)
     add_search(keyword)
 
     matches = []
@@ -425,6 +428,7 @@ def read_pdf():
         reader = PdfReader(pdf_path)
         update_reading_streak()
         add_recent(pdf_path)
+        add_recent_pdf(os.path.basename(pdf_path))
         increment_pdf_opened(os.path.basename(pdf_path))
 
     except Exception as e:

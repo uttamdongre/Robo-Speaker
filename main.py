@@ -1,16 +1,9 @@
 from settings_manager import settings_menu
-from speech import (
-    speak,
-    speak_sync,
-    pause_audio,
-    resume_audio,
-    stop_audio,
-    speak_sapi,
-)
 from pdf_reader import read_pdf
 from stats_manager import show_statistics
 from analytics_manager import analytics_menu
 from export_manager import export_menu
+from dashboard_manager import dashboard_menu
 
 
 def text_mode():
@@ -83,9 +76,10 @@ def main():
         print("3. Settings")
         print("4. Statistics")
         print("5. Analytics")
-        print("6. Export Data")
-        print("7. Audio Controls")
-        print("8. Exit")
+        print("6. Dashboard")
+        print("7. Export Data")
+        print("8. Audio Controls")
+        print("9. Exit")
 
         choice = input("\nEnter your choice: ")
 
@@ -105,12 +99,15 @@ def main():
             analytics_menu()
 
         elif choice == "6":
-            export_menu()
+            dashboard_menu()
 
         elif choice == "7":
-            audio_controls()
+            export_menu()
 
         elif choice == "8":
+            audio_controls()
+
+        elif choice == "9":
             stop_audio()
 
             speak_sapi("Bye Bye Friend")

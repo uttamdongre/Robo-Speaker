@@ -21,6 +21,12 @@ def increment_pdf_opened(pdf_name):
 
     stats["last_pdf_opened"] = pdf_name
 
+    pdf_counts = stats.get("pdf_open_counts", {})
+
+    pdf_counts[pdf_name] = pdf_counts.get(pdf_name, 0) + 1
+
+    stats["pdf_open_counts"] = pdf_counts
+
     save_stats(stats)
 
 
