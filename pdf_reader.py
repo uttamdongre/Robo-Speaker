@@ -24,6 +24,7 @@ from analytics_manager import (
     save_analytics,
     update_reading_streak,
 )
+from search_analytics_manager import add_search
 
 
 def select_pdf():
@@ -71,7 +72,9 @@ def search_pdf(reader, total_pages):
         text = reader.pages[page_no].extract_text()
 
         if text and keyword in text.lower():
-            matches.append(page_no + 1)
+            matches.append(
+                {"page": page_no + 1, "preview": text[:150].replace("\n", " ")}
+            )
 
     if not matches:
         print("No matches found")
@@ -79,14 +82,15 @@ def search_pdf(reader, total_pages):
 
     print(f"\nFound on {len(matches)} page(s):")
 
-    for page in matches:
-        print(page)
+    for item in matches:
+        print(f"\nPage {item['page']}")
+        print(item["preview"])
 
     try:
         page = int(input("\nJump to page: "))
-
-        if page in matches:
-            return page
+        for item in matches:
+            if item["page"] == page:
+                return page
 
     except:
         pass

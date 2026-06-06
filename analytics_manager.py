@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from search_analytics_manager import show_search_stats
 from utils import load_json, save_json
 
 FILE = "analytics.json"
@@ -107,7 +107,8 @@ def analytics_menu():
         print("1. View Analytics")
         print("2. Set Daily Goal")
         print("3. Goal Progress")
-        print("4. Back")
+        print("4. Search Analytics")
+        print("5. Back")
 
         choice = input("\nChoose: ")
 
@@ -121,6 +122,10 @@ def analytics_menu():
             show_goal_progress()
 
         elif choice == "4":
+            show_search_stats()
+            break
+
+        elif choice == "5":
             break
 
         else:
