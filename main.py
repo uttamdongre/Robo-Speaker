@@ -1,22 +1,77 @@
 from settings_manager import settings_menu
-from speech import speak
+from speech import (
+    speak,
+    speak_sync,
+    pause_audio,
+    resume_audio,
+    stop_audio,
+    speak_sapi,
+)
 from pdf_reader import read_pdf
 from stats_manager import show_statistics
+from analytics_manager import analytics_menu
 from export_manager import export_menu
 
 
 def text_mode():
 
     print("\nText Mode")
+
     print("Type 'exit' to return to menu")
+    print("Type 'pause' to pause audio")
+    print("Type 'resume' to resume audio")
+    print("Type 'stop' to stop audio")
 
     while True:
         text = input("\nEnter text: ")
 
-        if text.lower() == "exit":
+        command = text.lower().strip()
+
+        if command == "exit":
             break
 
-        speak(text)
+        elif command == "pause":
+            pause_audio()
+
+        elif command == "resume":
+            resume_audio()
+
+        elif command == "stop":
+            stop_audio()
+
+        else:
+            speak(text)
+
+
+def audio_controls():
+
+    while True:
+        print("\nAudio Controls")
+
+        print("1. Pause")
+
+        print("2. Resume")
+
+        print("3. Stop")
+
+        print("4. Back")
+
+        choice = input("\nChoose: ")
+
+        if choice == "1":
+            pause_audio()
+
+        elif choice == "2":
+            resume_audio()
+
+        elif choice == "3":
+            stop_audio()
+
+        elif choice == "4":
+            break
+
+        else:
+            print("Invalid Choice")
 
 
 def main():
@@ -27,8 +82,10 @@ def main():
         print("2. Read PDF")
         print("3. Settings")
         print("4. Statistics")
-        print("5. Export Data")
-        print("6. Exit")
+        print("5. Analytics")
+        print("6. Export Data")
+        print("7. Audio Controls")
+        print("8. Exit")
 
         choice = input("\nEnter your choice: ")
 
@@ -45,10 +102,18 @@ def main():
             show_statistics()
 
         elif choice == "5":
-            export_menu()
+            analytics_menu()
 
         elif choice == "6":
-            speak("Bye Bye Friend")
+            export_menu()
+
+        elif choice == "7":
+            audio_controls()
+
+        elif choice == "8":
+            stop_audio()
+
+            speak_sapi("Bye Bye Friend")
 
             print("Goodbye!")
 

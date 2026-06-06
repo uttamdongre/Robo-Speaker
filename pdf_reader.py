@@ -19,6 +19,11 @@ from collections_manager import (
     view_reading_lists,
     remove_from_reading_list,
 )
+from analytics_manager import (
+    load_analytics,
+    save_analytics,
+    update_reading_streak,
+)
 
 
 def select_pdf():
@@ -227,6 +232,9 @@ def continuous_reading(reader, pdf_path, current_page, total_pages):
         if text:
             speak(text)
             increment_pages_read()
+            analytics = load_analytics()
+            analytics["today_pages"] += 1
+            save_analytics(analytics)
 
         progress[pdf_path] = {"last_page": page_no}
 
@@ -250,6 +258,9 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
         if text:
             speak(text)
             increment_pages_read()
+            analytics = load_analytics()
+            analytics["today_pages"] += 1
+            save_analytics(analytics)
 
         progress[pdf_path] = {"last_page": current_page}
 
@@ -408,6 +419,7 @@ def read_pdf():
 
     try:
         reader = PdfReader(pdf_path)
+        update_reading_streak()
         add_recent(pdf_path)
         increment_pdf_opened(os.path.basename(pdf_path))
 
