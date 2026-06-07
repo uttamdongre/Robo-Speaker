@@ -85,11 +85,12 @@ async def edge_speak_async(text):
 
     pygame.mixer.music.play()
 
-    while pygame.mixer.music.get_busy():
+    while pygame.mixer.music.get_busy() or is_paused:
         if is_stopped:
             pygame.mixer.music.stop()
             break
-        await asyncio.sleep(0.1)
+
+    await asyncio.sleep(0.1)
 
     playback_active = False
 
@@ -119,6 +120,9 @@ def run_edge_thread(text):
 def speak_edge(text):
 
     global audio_thread
+    global is_stopped
+
+    is_stopped = False
 
     if audio_thread and audio_thread.is_alive():
         stop_audio()
@@ -156,6 +160,9 @@ def stop_audio():
 
     global playback_active
     global is_paused
+    global is_stopped
+
+    is_stopped = True
 
     try:
         pygame.mixer.music.stop()
