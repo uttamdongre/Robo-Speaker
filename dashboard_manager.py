@@ -6,8 +6,8 @@ from stats_manager import load_stats
 from analytics_manager import load_analytics
 from search_analytics_manager import load_search_data
 from analytics_manager import show_analytics
-
 from search_analytics_manager import show_search_stats
+from session_manager import show_session_stats, get_session_summary
 
 
 def dashboard_menu():
@@ -19,8 +19,9 @@ def dashboard_menu():
         print("2. Recent Searches")
         print("3. Reading Analytics")
         print("4. Search Analytics")
-        print("5. Activity Summary")
-        print("6. Back")
+        print("5. Reading Sessions")
+        print("6. Activity Summary")
+        print("7. Back")
 
         choice = input("\nChoose: ")
 
@@ -37,9 +38,12 @@ def dashboard_menu():
             show_search_stats()
 
         elif choice == "5":
-            show_activity_summary()
+            show_session_stats()
 
         elif choice == "6":
+            show_activity_summary()
+
+        elif choice == "7":
             break
 
         else:
@@ -54,6 +58,8 @@ def show_activity_summary():
 
     search_data = load_search_data()
 
+    session_data = get_session_summary()
+
     print("\n===== ACTIVITY SUMMARY =====\n")
 
     print(f"Pages Read Today : {analytics.get('today_pages', 0)}")
@@ -61,6 +67,12 @@ def show_activity_summary():
     print(f"Current Streak   : {analytics.get('current_streak', 0)}")
 
     print(f"Longest Streak   : {analytics.get('longest_streak', 0)}")
+
+    print(f"Reading Sessions : {session_data['total_sessions']}")
+
+    print(f"Reading Minutes  : {session_data['total_minutes']}")
+
+    print(f"Longest Session  : {session_data['longest_minutes']} min")
 
     print(f"Total Searches   : {search_data.get('total_searches', 0)}")
 

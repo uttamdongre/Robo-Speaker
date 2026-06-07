@@ -1,6 +1,5 @@
 import os
 from PyPDF2 import PdfReader
-
 from speech import speak
 from utils import load_json, save_json
 from history_manager import add_recent_pdf, add_search_history
@@ -25,6 +24,7 @@ from analytics_manager import (
     update_reading_streak,
 )
 from search_analytics_manager import add_search
+from session_manager import start_session, end_session
 
 
 def select_pdf():
@@ -286,13 +286,20 @@ def continuous_reading(reader, pdf_path, current_page, total_pages):
             analytics["today_pages"] += 1
             save_analytics(analytics)
 
-        progress[pdf_path] = {"last_page": page_no}
+        progress[pdf_path] = {
+            "last_page": page_no,
+            "total_pages": total_pages,
+        }
 
         save_progress(progress)
 
     print("\nPDF Completed")
 
-    progress[pdf_path] = {"last_page": 1}
+    progress[pdf_path] = {
+        "last_page": 1,
+        "total_pages": total_pages,
+    }
+    end_session()
     save_progress(progress)
 
 
@@ -339,7 +346,10 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
 
             save_analytics(analytics)
 
-        progress[pdf_path] = {"last_page": current_page}
+        progress[pdf_path] = {
+            "last_page": current_page,
+            "total_pages": total_pages,
+        }
 
         save_progress(progress)
 
@@ -579,15 +589,21 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
             "quit",
         ]:
             if current_page >= total_pages:
-                progress[pdf_path] = {"last_page": 1}
+                progress[pdf_path] = {
+                    "last_page": 1,
+                    "total_pages": total_pages,
+                }
 
             else:
-                progress[pdf_path] = {"last_page": current_page}
+                progress[pdf_path] = {
+                    "last_page": current_page,
+                    "total_pages": total_pages,
+                }
 
             save_progress(progress)
 
             print("Progress Saved")
-
+            end_session()
             break
 
         else:
@@ -620,6 +636,7 @@ def read_pdf():
 
     try:
         reader = PdfReader(pdf_path)
+        start_session()
         update_reading_streak()
         add_recent(pdf_path)
         add_recent_pdf(os.path.basename(pdf_path))

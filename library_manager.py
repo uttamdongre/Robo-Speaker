@@ -73,15 +73,23 @@ def show_library():
             pdf,
             0,
         )
+
         progress_percent = 0
 
-        if last_page > 1:
-            progress_percent = min(
-                last_page,
-                100,
-            )
+        pdf_progress = progress.get(
+            full_path,
+            {},
+        )
 
-        if open_count == 0:
+        total_pages = pdf_progress.get(
+            "total_pages",
+            0,
+        )
+
+        if total_pages > 0:
+            progress_percent = int((last_page / total_pages) * 100)
+
+        if progress_percent == 0:
             status = "Not Started"
 
         elif progress_percent >= 100:
