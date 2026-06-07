@@ -4,6 +4,14 @@ from stats_manager import show_statistics
 from analytics_manager import analytics_menu
 from export_manager import export_menu
 from dashboard_manager import dashboard_menu
+from library_manager import library_menu
+from speech import (
+    speak,
+    pause_audio,
+    resume_audio,
+    stop_audio,
+    speak_sapi,
+)
 
 
 def text_mode():
@@ -76,11 +84,11 @@ def main():
         print("3. Settings")
         print("4. Statistics")
         print("5. Analytics")
-        print("6. Dashboard")
-        print("7. Export Data")
-        print("8. Audio Controls")
-        print("9. Exit")
-
+        print("6. PDF Library")
+        print("7. Dashboard")
+        print("8. Export Data")
+        print("9. Audio Controls")
+        print("10. Exit")
         choice = input("\nEnter your choice: ")
 
         if choice == "1":
@@ -99,15 +107,18 @@ def main():
             analytics_menu()
 
         elif choice == "6":
-            dashboard_menu()
+            library_menu()
 
         elif choice == "7":
-            export_menu()
+            dashboard_menu()
 
         elif choice == "8":
-            audio_controls()
+            export_menu()
 
         elif choice == "9":
+            audio_controls()
+
+        elif choice == "10":
             stop_audio()
 
             speak_sapi("Bye Bye Friend")
