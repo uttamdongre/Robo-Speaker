@@ -107,32 +107,6 @@ def change_voice_engine():
     settings = load_settings()
 
     print("\nVoice Engine")
-
-    print("1. Windows SAPI")
-    print("2. Edge Neural")
-
-    choice = input("\nChoose: ")
-
-    if choice == "1":
-        settings["voice_engine"] = "sapi"
-
-    elif choice == "2":
-        settings["voice_engine"] = "edge"
-
-    else:
-        print("Invalid Choice")
-        return
-
-    save_settings(settings)
-
-    print("Voice engine updated")
-
-
-def change_voice_engine():
-
-    settings = load_settings()
-
-    print("\nVoice Engine")
     print("1. Windows SAPI")
     print("2. Edge Neural Voice")
 

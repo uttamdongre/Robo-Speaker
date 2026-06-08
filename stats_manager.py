@@ -52,3 +52,16 @@ def show_statistics():
     print(f"Reading Sessions     : {stats.get('reading_sessions', 0)}")
 
     print(f"Last PDF Opened      : {stats.get('last_pdf_opened', 'None')}")
+
+    pdf_counts = stats.get(
+        "pdf_open_counts",
+        {},
+    )
+
+    if pdf_counts:
+        top_pdf = max(
+            pdf_counts,
+            key=pdf_counts.get,
+        )
+
+        print(f"Most Opened PDF      : {top_pdf}")

@@ -7,11 +7,16 @@ def load_json(filename):
         return {}
 
     try:
-        with open(filename, "r") as file:
+        with open(
+            filename,
+            "r",
+            encoding="utf-8",
+        ) as file:
             return json.load(file)
 
-    except:
-        return {}
+    except Exception as e:
+        print(f"JSON Error: {e}")
+    return {}
 
 
 def save_json(filename, data):

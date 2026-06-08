@@ -23,7 +23,7 @@ from analytics_manager import (
     save_analytics,
     update_reading_streak,
 )
-from search_analytics_manager import add_search
+from search_analytics_manager import add_search_new
 from session_manager import start_session, end_session
 
 
@@ -35,7 +35,9 @@ def select_pdf():
         os.makedirs(pdf_folder)
         print("Created pdfs folder. Add PDFs and try again.")
         return None
-    pdf_files = [f for f in os.listdir(pdf_folder) if f.lower().endswith(".pdf")]
+    pdf_files = sorted(
+        [f for f in os.listdir(pdf_folder) if f.lower().endswith(".pdf")]
+    )
 
     if not pdf_files:
         print("No PDFs found in pdfs folder")
@@ -52,7 +54,7 @@ def select_pdf():
         if 1 <= choice <= len(pdf_files):
             return os.path.join(pdf_folder, pdf_files[choice - 1])
 
-    except:
+    except Exception:
         pass
 
     print("Invalid selection")
@@ -62,6 +64,9 @@ def select_pdf():
 def search_pdf(reader, total_pages):
 
     keyword = input("\nSearch text: ").lower()
+    if not keyword.strip():
+        print("Search text cannot be empty")
+        return None
     add_search_history(keyword)
     add_search(keyword)
 
@@ -100,6 +105,10 @@ def search_pdf(reader, total_pages):
 
 
 def search_pdf_keyword(reader, total_pages, keyword):
+
+    if not keyword.strip():
+        print("Search text cannot be empty")
+        return None
 
     add_search_history(keyword)
 
@@ -547,7 +556,7 @@ def interactive_reading(reader, pdf_path, current_page, total_pages):
         elif command == "h":
             show_search_history()
 
-        # REPLAY
+        # loop restarts
 
         elif command == "r":
             continue
@@ -675,3 +684,4 @@ def read_pdf():
 
     else:
         print("Invalid Choice")
+        end_session()

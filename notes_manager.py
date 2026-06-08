@@ -68,7 +68,15 @@ def edit_note(pdf_path):
     try:
         choice = int(input("\nNote Number To Edit: "))
 
+        if not 1 <= choice <= len(notes[pdf_path]):
+            print("Invalid Selection")
+            return
+
         new_note = input("\nNew Note:\n")
+
+        if not new_note.strip():
+            print("Note cannot be empty")
+            return
 
         notes[pdf_path][choice - 1]["note"] = new_note
 
@@ -96,6 +104,10 @@ def delete_note(pdf_path):
 
     try:
         choice = int(input("\nNote Number To Delete: "))
+
+        if not 1 <= choice <= len(notes[pdf_path]):
+            print("Invalid Selection")
+            return
 
         notes[pdf_path].pop(choice - 1)
 

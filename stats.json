@@ -1,10 +1,10 @@
 {
-    "total_pdfs_read": 41,
-    "total_pages_read": 109,
-    "reading_sessions": 41,
+    "total_pdfs_read": 42,
+    "total_pages_read": 110,
+    "reading_sessions": 42,
     "last_pdf_opened": "AI_Engineering.pdf",
     "pdf_open_counts": {
-        "AI_Engineering.pdf": 10,
+        "AI_Engineering.pdf": 11,
         "Artificial Intelligence. A modern approach (Stuart Russell  Peter Norvig) (Z-Library).pdf": 2
     }
 }

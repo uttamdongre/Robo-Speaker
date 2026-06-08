@@ -15,6 +15,8 @@ def save_sessions(data):
 def start_session():
 
     data = load_sessions()
+    if data.get("session_start"):
+        return
 
     data["session_start"] = datetime.now().isoformat()
 

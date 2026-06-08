@@ -48,5 +48,5 @@ def show_search_stats():
         print(f"{keyword} : {count}")
 
 
-def add_search(keyword):
+def add_search_new(keyword):
     increment_search(keyword)

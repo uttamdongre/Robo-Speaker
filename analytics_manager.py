@@ -61,7 +61,7 @@ def set_daily_goal():
 
         print("Goal Updated")
 
-    except:
+    except ValueError:
         print("Invalid Goal")
 
 
@@ -123,7 +123,6 @@ def analytics_menu():
 
         elif choice == "4":
             show_search_stats()
-            break
 
         elif choice == "5":
             break

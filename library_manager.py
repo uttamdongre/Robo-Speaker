@@ -21,15 +21,29 @@ def show_library():
 
     progress = load_json("progress.json")
 
-    favorites = load_json("favorites.json")
+    collections = load_json("collections.json")
 
-    categories = load_json("categories.json")
+    favorites = collections.get(
+        "favorites",
+        [],
+    )
+
+    categories = collections.get(
+        "categories",
+        {},
+    )
 
     stats = load_json("stats.json")
 
     pdf_counts = stats.get("pdf_open_counts", {})
 
     favorite_count = 0
+
+    in_progress_count = 0
+
+    not_started_count = 0
+
+    completed_count = 0
 
     for pdf in pdfs:
         full_path = os.path.join(
@@ -69,6 +83,19 @@ def show_library():
 
                 break
 
+        reading_list = "None"
+
+        lists = collections.get(
+            "reading_lists",
+            {},
+        )
+
+        for list_name, files in lists.items():
+            if full_path in files:
+                reading_list = list_name
+
+                break
+
         open_count = pdf_counts.get(
             pdf,
             0,
@@ -91,12 +118,15 @@ def show_library():
 
         if progress_percent == 0:
             status = "Not Started"
+            not_started_count += 1
 
         elif progress_percent >= 100:
             status = "Completed"
+            completed_count += 1
 
         else:
             status = "In Progress"
+            in_progress_count += 1
 
         print(pdf)
 
@@ -106,22 +136,52 @@ def show_library():
 
         print(f"Category       : {category}")
 
+        print(f"Reading List   : {reading_list}")
+
         print(f"Times Opened   : {open_count}")
 
         print(f"Status         : {status}")
 
-        print(f"Progress       : {progress_percent}%")
+        print(f"Progress       : {progress_percent}% ({last_page}/{total_pages} pages)")
 
         print("-" * 40)
 
+    category_count = len(
+        collections.get(
+            "categories",
+            {},
+        )
+    )
+    reading_list_count = len(
+        collections.get(
+            "reading_lists",
+            {},
+        )
+    )
     print("\n===== LIBRARY SUMMARY =====")
-    print(f"Total PDFs : {len(pdfs)}")
-    print(f"Favorites  : {favorite_count}")
+
+    print(f"Total PDFs      : {len(pdfs)}")
+
+    print(f"Favorites       : {favorite_count}")
+
+    print(f"Categories      : {category_count}")
+
+    print(f"Reading Lists   : {reading_list_count}")
+
+    print(f"In Progress     : {in_progress_count}")
+
+    print(f"Not Started     : {not_started_count}")
+
+    print(f"Completed       : {completed_count}")
 
 
 def search_library():
 
     pdf_folder = "pdfs"
+
+    if not os.path.exists(pdf_folder):
+        print("PDF folder not found")
+        return
 
     pdfs = sorted([f for f in os.listdir(pdf_folder) if f.lower().endswith(".pdf")])
 
@@ -170,6 +230,54 @@ def show_top_pdfs():
         print(f"{i}. {pdf} ({count} opens)")
 
 
+def library_health_check():
+
+    collections = load_json("collections.json")
+
+    issues = []
+
+    favorites = collections.get(
+        "favorites",
+        [],
+    )
+
+    for pdf in favorites:
+        if not os.path.exists(pdf):
+            issues.append(f"Missing Favorite: {pdf}")
+
+    categories = collections.get(
+        "categories",
+        {},
+    )
+
+    for category, files in categories.items():
+        for pdf in files:
+            if not os.path.exists(pdf):
+                issues.append(f"Missing Category PDF: {pdf}")
+
+    reading_lists = collections.get(
+        "reading_lists",
+        {},
+    )
+
+    for list_name, files in reading_lists.items():
+        for pdf in files:
+            if not os.path.exists(pdf):
+                issues.append(f"Missing Reading List PDF: {pdf}")
+
+    print("\n===== LIBRARY HEALTH =====\n")
+
+    if not issues:
+        print("No issues found")
+
+        return
+
+    for issue in issues:
+        print(issue)
+
+    print(f"\nFound {len(issues)} issue(s)")
+
+
 def library_menu():
 
     while True:
@@ -189,7 +297,9 @@ def library_menu():
 
         print("7. Reading Insights")
 
-        print("8. Back")
+        print("8. Library Health Check")
+
+        print("9. Back")
 
         choice = input("\nChoose: ")
 
@@ -215,6 +325,8 @@ def library_menu():
             reading_insights_menu()
 
         elif choice == "8":
+            library_health_check()
+        elif choice == "9":
             break
 
         else:

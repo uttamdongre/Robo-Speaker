@@ -90,7 +90,7 @@ async def edge_speak_async(text):
             pygame.mixer.music.stop()
             break
 
-    await asyncio.sleep(0.1)
+        await asyncio.sleep(0.1)
 
     playback_active = False
 
@@ -98,7 +98,7 @@ async def edge_speak_async(text):
 
     try:
         os.remove(temp_path)
-    except:
+    except Exception:
         pass
 
 

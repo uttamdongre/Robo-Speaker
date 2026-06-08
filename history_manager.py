@@ -14,7 +14,8 @@ def save_history(data):
 def add_search_history(keyword):
 
     history = load_history()
-
+    if keyword in history:
+        history.remove(keyword)
     history.insert(0, keyword)
 
     history = history[:20]
@@ -50,6 +51,8 @@ def save_recent_pdfs(data):
 def add_recent_pdf(pdf_name):
 
     data = load_recent_pdfs()
+    if pdf_name in data:
+        data.remove(pdf_name)
 
     data.insert(0, pdf_name)
 

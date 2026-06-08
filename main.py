@@ -19,8 +19,8 @@ def text_mode():
     print("\nText Mode")
 
     print("Type 'exit' to return to menu")
-    print("Type 'pause' to pause audio")
-    print("Type 'resume' to resume audio")
+    print("Type 'pause' to pause audio (experimental)")
+    print("Type 'resume' to resume audio (experimental)")
     print("Type 'stop' to stop audio")
 
     while True:
@@ -29,6 +29,7 @@ def text_mode():
         command = text.lower().strip()
 
         if command == "exit":
+            stop_audio()
             break
 
         elif command == "pause":
@@ -69,6 +70,7 @@ def audio_controls():
             stop_audio()
 
         elif choice == "4":
+            stop_audio()
             break
 
         else:
